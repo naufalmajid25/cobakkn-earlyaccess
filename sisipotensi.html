@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denah Potensi Bakulan Wetan</title>
+    <link href = 'logokkn.png' rel = 'shortcut icon'>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css"/>
+     <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
+    <link href = './css/styletailwind.css' rel = 'stylesheet'>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: calc(100vh - 64px);
+        }
+
+        .leaflet-control-geocoder-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 20l-5.7-5.7a7 7 0 1 0-1.4 1.4L20 21zM4 10a6 6 0 1 1 12 0A6 6 0 0 1 4 10z"/></svg>');
+            background-size: 16px 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #poppeta {
+            z-index:1100;
+        }
+    </style>
+</head>
+<body>
+    <noscript>
+        <div class="bg-green-100 text-green-800 p-4 text-center">
+            Website ini membutuhkan JavaScript untuk berfungsi. Silakan aktifkan JavaScript di browser Anda.
+        </div>
+    </noscript>
+    <nav class="bg-gray-50 shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="text-xl sm:text-2xl font-bold text-green-700">Sisi Potensi: Pemetaan Potensi Dukuh dan Lokasi Penting</div>
+        
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-green-600">Beranda</a>
+                    <a href="https://arcg.is/jCqz8" target="_blank" class="hover:text-green-600">Potensi Dukuh</a>
+                    <a href="https://public.tableau.com/views/DashboardUMKMBakulanWetan/DashboardUMKMBakulanWetan?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link" target="_blank" class=" hover:text-green-600">Potensi UMKM</a>
+                    <button class="pemetaan-btn hover:text-green-600">Pemetaan</button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menuBtn" class="text-gray-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" 
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" 
+                            stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="menu" class="md:hidden hidden px-4 pb-4">
+            <a href="./index.html" class="block py-2 hover:text-green-600">Beranda</a>
+            <a href="https://arcg.is/jCqz8" target="_blank" class="block py-2 hover:text-green-600">Potensi Dukuh</a>
+            <a href="https://public.tableau.com/views/DashboardUMKMBakulanWetan/DashboardUMKMBakulanWetan?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link" target="_blank" class="block py-2 hover:text-green-600">Potensi UMKM</a>
+            <button class="pemetaan-btn hover:text-green-600">Pemetaan</button>
+        </div>
+    </nav>
+
+    <!-- Popup Submenu -->
+    <div id="poppeta" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden">
+        <a href="./umkmgeomap.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-green-600">Peta Sebaran UMKM</a>
+        <a href="./umkmnititlatah.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-green-600">Peta Analisis Potensi Lokasi Strategis UMKM</a>
+        <a href="./sisipotensi.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-green-600">Peta Potensi Dukuh dan Lokasi Penting</a>
+    </div>
+
+    <div id="map"></div>
+    <!-- layer legend -->
+    <div id="layerControlBox"
+     class="fixed sm:top-20 sm:right-4 sm:bottom-auto sm:w-80
+            bottom-0 w-full max-h-[50vh] sm:max-h-[60vh]
+            overflow-auto bg-white shadow-xl sm:rounded-lg sm:block
+            hidden rounded-t-xl z-[1000] p-4 text-sm transition-all duration-300 ease-in-out">
+    </div>
+    <!-- button hp -->
+     <button id="openLayerModal"
+        class="fixed bottom-12 right-4 z-[1000] bg-green-600 text-white p-3 rounded-full shadow-lg sm:hidden"
+        title="Layer & Legenda">
+        <!-- Ikon SVG buku -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 6V4m0 2a2 2 0 012 2v12a2 2 0 01-2 2m0-16a2 2 0 00-2 2v12a2 2 0 002 2m-2 0H6a2 2 0 01-2-2V8a2 2 0 012-2h4m4 0h4a2 2 0 012 2v12a2 2 0 01-2 2h-4" />
+        </svg>
+    </button>
+    <script>
+        // menampilkan petanya (basemap-nya)
+        var map = L.map('map', {
+            center: [-7.908469, 110.347980],
+            zoom: 18,
+            minZoom: 10
+        });
+
+        const initialCenter = [-7.908469, 110.347980];
+        const initialZoom = 18;
+
+        var esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.esri.com/en-us/legal/copyright-proprietary-rights">Esri</a>'
+            })
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        })
+
+        esri.addTo(map);
+
+        // Simpan state layer aktif
+        let currentBase = osm;
+
+        // Saat zoom berubah
+        map.on('zoomend', function () {
+            let zoom = map.getZoom();
+            console.log("Zoom sekarang:", zoom);
+
+            // Ganti ke Satelit saat zoom lebih besar dari 14
+            if (zoom >= 18 && currentBase !== osm) {
+                map.removeLayer(currentBase);
+                map.addLayer(osm);
+                currentBase = osm;
+            }
+            // Kembali ke OSM jika zoom <= 14
+            else if (zoom <= 17 && currentBase !== esri) {
+                map.removeLayer(currentBase);
+                map.addLayer(esri);
+                currentBase = esri;
+            }
+        });
+
+        const btn = document.getElementById('menuBtn');
+        const menu = document.getElementById('menu');
+        btn.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+        });
+
+        const buttons = document.querySelectorAll('.pemetaan-btn');
+        const subpop = document.getElementById('poppeta');
+
+        // Toggle submenu ketika tombol diklik
+        buttons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Cegah klik merembet ke window
+                subpop.classList.toggle('hidden');
+            });
+        });
+
+        // Tutup submenu jika klik di luar area tombol dan popup
+        window.addEventListener('click', function (e) {
+            const isButton = e.target.closest('.pemetaan-btn');
+            if (!isButton && !subpop.contains(e.target)) {
+                subpop.classList.add('hidden');
+            }
+        });
+
+        //layer
+        const layersInfo1 = [
+            {
+            id: "batasKelurahan",
+            name: "Batas Administrasi Kelurahan",
+            path: "./geojson/batas_administrasi_kalurahan_jetis.geojson",
+            color: "black",
+            opacity: 0.5,
+            identityProp: "NAMOBJ"
+            },
+            {
+            id: "batasDukuh",
+            name: "Batas Administrasi Dukuh",
+            path: "./geojson/batas_administrasi_dukuh.geojson",
+            color: "gray",
+            opacity: 0.5,
+            identityProp: "dukuh"
+            },
+            {
+            id: "batasRT",
+            name: "Batas Administrasi RT",
+            path: "./geojson/batas_administrasi_rt.geojson",
+            color: "yellow",
+            opacity: 0.5,
+            identityProp: "Nama_RT"
+            }
+        ]
+        const layersInfo2 = [
+            {
+            id: "potensidukuh",
+            name: "Potensi Dukuh",
+            path: "./geojson/sebaran_potensi_dukuh.geojson",
+            color: "#ff00c2"
+            }
+        ]
+        const layerGroups = {};
+        const identityFeatures = [];
+        const controlBox = document.getElementById("layerControlBox");
+
+        layersInfo1.forEach(info => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "space-y-1";
+
+            wrapper.innerHTML = `
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" id="check-${info.id}" checked class="accent-green-600">
+                    <span class="font-medium">${info.name}</span>
+                </label>
+                <div class="ml-5 flex items-center space-x-2">
+                    <div class="w-6 h-4" style="background-color: ${info.color};"></div>
+                    <span class="text-gray-600 text-xs">${info.name}</span>
+                </div>
+            `;
+            controlBox.appendChild(wrapper);
+
+            fetch(info.path)
+            .then(res => res.json())
+            .then(data => {
+                const geoLayer = L.geoJSON(data, {
+                style: {
+                    color: info.color,
+                    weight: 2
+                },
+                onEachFeature: (feature, layer) => {
+                    const properti = feature.properties[info.identityProp] || "Tanpa Nama";
+                    layer.bindPopup(properti);
+                }
+                });
+
+                layerGroups[info.id] = geoLayer;
+                map.addLayer(geoLayer);
+
+                // toggle behavior
+                document.getElementById(`check-${info.id}`).addEventListener("change", (e) => {
+                    if (e.target.checked) {
+                        map.addLayer(geoLayer);
+                    } else {
+                        map.removeLayer(geoLayer);
+                    }
+                });
+            });
+        });
+        layersInfo2.forEach(info => {
+           const wrapper1 = document.createElement("div");
+            wrapper1.className = "space-y-1";
+
+            wrapper1.innerHTML = `
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" id="check-${info.id}" checked class="accent-green-600">
+                    <span class="font-medium">${info.name}</span>
+                </label>
+                <div class="ml-5 flex items-center space-x-2">
+                    <div class="w-4 h-4 rounded-full" style="background-color: ${info.color};"></div>
+                    <span class="text-gray-600 text-xs">${info.name}</span>
+                </div>
+            `;
+            controlBox.appendChild(wrapper1);
+            fetch(info.path)
+            .then(res => res.json())
+            .then(data => {
+                const potensiDukuh = L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: "#ff00c2",
+                            color: "#b63497",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        });
+                    },
+                    onEachFeature: function (feature, layer) {
+                        const props = feature.properties;
+
+                        const title = props.Title || "Tanpa Judul";
+                        const image1 = props.Foto || "Tidak ada gambar";
+                        const description = props.Description || "Tidak ada deskripsi.";
+
+                        const popupContent = `
+                        <div class="text-base text-gray-800 max-w-[80vw] max-h-[80vh] overflow-y-auto sm:max-w-sm md:max-w-md">
+                            <h3 class="font-semibold text-green-700 text-base sm:text-lg mb-1">${title}</h3>
+                            ${image1 ? `<img src="${image1}" alt="${title}" class="w-full h-auto max-w-full rounded shadow mb-2">` : ''}
+                            <p class="leading-tight">${description}</p>
+                        </div>
+                        `;
+
+                        layer.bindPopup(popupContent);
+                    }
+                });
+
+                map.addLayer(potensiDukuh);
+                layerGroups[info.id] = potensiDukuh;
+                // toggle behavior
+                document.getElementById(`check-${info.id}`).addEventListener("change", (e) => {
+                    if (e.target.checked) {
+                        map.addLayer(potensiDukuh);
+                    } else {
+                        map.removeLayer(potensiDukuh);
+                    }
+                });
+            });
+        });
+        // responsif legenda layer hp
+        const openBtn1 = document.getElementById('openLayerModal');
+        const controlBox1 = document.getElementById('layerControlBox');
+
+        // Toggle buka/tutup modal
+        openBtn1.addEventListener('click', () => {
+            controlBox1.classList.toggle('hidden');
+        });
+
+        // Tutup popup saat klik di luar area layerControlBox di HP
+        window.addEventListener('click', (e) => {
+            if (window.innerWidth < 640) {
+                const isInsideBox = e.target.closest('#layerControlBox');
+                const isOpenButton = e.target.closest('#openLayerModal');
+                if (!isInsideBox && !isOpenButton) {
+                controlBox.classList.add('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

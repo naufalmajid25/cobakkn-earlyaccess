@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang = "id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Website Bakulan Wetan</title>
+        <link href = 'logokkn.png' rel = 'shortcut icon'>
+        <link href = './css/styletailwind.css' rel = 'stylesheet'>
+    </head>
+    <body class = 'bg-gray-50'>
+        <noscript>
+            <div class="bg-green-100 text-green-800 p-4 text-center">
+                Website ini membutuhkan JavaScript untuk berfungsi. Silakan aktifkan JavaScript di browser Anda.
+            </div>
+        </noscript>
+        <nav class="bg-gray-50 shadow-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16 items-center">
+                    <div class="text-xl sm:text-2xl font-bold text-green-700">Website Dukuh Bakulan Wetan</div>
+        
+                    <!-- Desktop Menu -->
+                    <div class="hidden md:flex space-x-6">
+                        <a href="#" class="hover:text-green-600">Beranda</a>
+                        <a href="https://arcg.is/jCqz8" target="_blank" class="hover:text-green-600">Potensi Dukuh</a>
+                        <a href="https://public.tableau.com/views/DashboardUMKMBakulanWetan/DashboardUMKMBakulanWetan?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link" target="_blank" class="hover:text-green-600">Potensi UMKM</a>
+                        <button class="pemetaan-btn hover:text-green-600">Pemetaan</button>
+                    </div>
+
+                    <!-- Popup Submenu -->
+                    <div id="poppeta" class="absolute right-0 mt-40 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden z-10">
+                        <a href="./umkmgeomap.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-green-600">Peta Sebaran UMKM</a>
+                        <a href="./umkmnititlatah.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-green-600">Peta Analisis Potensi Lokasi Strategis UMKM</a>
+                        <a href="./sisipotensi.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-green-600">Peta Potensi Dukuh dan Lokasi Penting</a>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <div class="md:hidden">
+                        <button id="menuBtn" class="text-gray-600 focus:outline-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" 
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" 
+                                stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Mobile Menu -->
+            <div id="menu" class="md:hidden hidden px-4 pb-4">
+                <a href="#" class="block py-2 hover:text-green-600">Beranda</a>
+                <a href="https://arcg.is/jCqz8" target="_blank" class="block py-2 hover:text-green-600">Potensi Dukuh</a>
+                <a href="https://public.tableau.com/views/DashboardUMKMBakulanWetan/DashboardUMKMBakulanWetan?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link" target="_blank" class="block py-2 hover:text-green-600">Potensi UMKM</a>
+                <button class="pemetaan-btn hover:text-green-600">Pemetaan</button>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto px-6 py-16 space-y-10 md:space-y-0">
+            <!-- Teks -->
+            <div class="md:w-1/2">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-green-800 leading-tight">
+                Pemetaan Potensi Dukuh dan UMKM
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 mb-6 max-w-xl">
+                Pemetaan ini dibuat untuk menyajikan informasi potensi dukuh dan UMKM serta sebarannya dalam bentuk visualisasi berupa pemetaan digital.
+                </p>
+            </div>
+            <!-- Gambar -->
+            <div class="md:w-1/2">
+                <img src="./homepage_image.jpg" 
+                alt="Homepage Image" 
+                class="w-full h-auto max-w-md md:max-w-full rounded-xl shadow-md mx-auto">
+            </div>
+        </section>
+
+        <!-- SECTION FLEX RESPONSIF -->
+        <section class="bg-gray-50 py-12 px-4">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
+    
+                <!-- CARD 1: Infografis UMKM -->
+                <div class="flex-1 bg-green-50 p-6 rounded-lg shadow-md text-center">
+                    <h2 class="text-lg sm:text-xl font-semibold text-green-800 mb-2">Unduh Infografis UMKM</h2>
+                    <p class="text-gray-600 mb-4 text-sm sm:text-base">
+                        File yang berisi infografis UMKM Dukuh Bakulan Wetan.
+                    </p>
+                    <a href="./profil_umkm.pdf" download class="inline-block">
+                        <button class="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg font-semibold shadow hover:bg-green-700 transition duration-300">
+                            Unduh Infografis UMKM
+                        </button>
+                    </a>
+                </div>
+
+            <!-- CARD 2: Peta Admin -->
+            <div class="flex-1 bg-green-50 p-6 rounded-lg shadow-md text-center">
+                <h2 class="text-lg sm:text-xl font-semibold text-green-800 mb-2">Unduh Peta Batas Administrasi RT</h2>
+                <p class="text-gray-600 mb-4 text-sm sm:text-base">
+                    File PDF berisi Peta Batas Administrasi RT Dukuh Bakulan Wetan.
+                </p>
+                <a href="./peta_admin_rt.pdf" download class="inline-block">
+                    <button class="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg font-semibold shadow hover:bg-green-700 transition duration-300">
+                        Unduh Peta Batas Administrasi RT
+                    </button>
+                 </a>
+             </div>
+
+            </div>
+        </section>
+
+        <footer class="bg-green-700 text-white py-6 mt-16">
+            <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm">
+                <div class="mb-4 md:mb-0">
+                    &copy; 2025 Website Dukuh Bakulan Wetan, KKN PPM UGM.
+                </div>
+                <div class="flex space-x-4">
+                    <a href="https://www.instagram.com/semanisjetis?igsh=enpscmxuamRzejFz" target="_blank" class="hover:underline">Instagram</a>
+                    <a href="https://www.tiktok.com/@semanisjetis?_t=ZS-8yWx2ww0jrU&_r=1" target="_blank" class="hover:underline">Tiktok</a>
+                </div>
+            </div>
+        </footer>
+        <script>
+            const btn = document.getElementById('menuBtn');
+            const menu = document.getElementById('menu');
+            btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+            });
+
+            const buttons = document.querySelectorAll('.pemetaan-btn');
+            const subpop = document.getElementById('poppeta');
+
+            // Toggle submenu ketika tombol diklik
+            buttons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Cegah klik merembet ke window
+                    subpop.classList.toggle('hidden');
+                });
+            });
+
+            // Tutup submenu jika klik di luar area tombol dan popup
+            window.addEventListener('click', function (e) {
+                const isButton = e.target.closest('.pemetaan-btn');
+                if (!isButton && !subpop.contains(e.target)) {
+                    subpop.classList.add('hidden');
+                }
+            });
+        </script>
+    </body>
